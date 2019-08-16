@@ -13,5 +13,3 @@ cd /workspace/bert/data/glue && python3 download_glue_data.py
 cd /workspace/bert/data/wikipedia_corpus && . run_preprocessing.sh
 
 cd /workspace/bert/data/bookcorpus && . run_preprocessing.sh
-
-cd /workspace/bert/data/glue && python3 download_glue_data.py 

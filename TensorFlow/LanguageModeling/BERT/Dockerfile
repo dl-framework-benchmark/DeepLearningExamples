@@ -1,6 +1,6 @@
 ARG FROM_IMAGE_NAME=nvcr.io/nvidia/tensorflow:19.06-py3
 
-FROM tensorrtserver_client as trt
+#FROM tensorrtserver_client as trt
 
 FROM ${FROM_IMAGE_NAME}
 
@@ -14,11 +14,11 @@ RUN git clone https://github.com/attardi/wikiextractor.git
 RUN git clone https://github.com/soskek/bookcorpus.git
 
 # Copy the perf_client over
-COPY --from=trt /workspace/build/perf_client /workspace/build/perf_client
+#COPY --from=trt /workspace/build/perf_client /workspace/build/perf_client
 
 # Copy the python wheel and install with pip
-COPY --from=trt /workspace/build/dist/dist/tensorrtserver*.whl /tmp/
-RUN pip install /tmp/tensorrtserver*.whl && rm /tmp/tensorrtserver*.whl
+#COPY --from=trt /workspace/build/dist/dist/tensorrtserver*.whl /tmp/
+#RUN pip install /tmp/tensorrtserver*.whl && rm /tmp/tensorrtserver*.whl
 
 
 WORKDIR /workspace/bert
