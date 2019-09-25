@@ -19,10 +19,11 @@ from __future__ import division
 from __future__ import print_function
 
 import collections
+import re
 import unicodedata
 import six
 import tensorflow as tf
-import re
+
 
 def validate_case_matches_checkpoint(do_lower_case, init_checkpoint):
   """Checks whether the casing config is consistent with the checkpoint name."""
@@ -72,7 +73,6 @@ def validate_case_matches_checkpoint(do_lower_case, init_checkpoint):
         "how the model was pre-training. If this error is wrong, please "
         "just comment out this check." % (actual_flag, init_checkpoint,
                                           model_name, case_name, opposite_flag))
-
 
 
 def convert_to_unicode(text):
@@ -378,7 +378,7 @@ def _is_control(char):
   if char == "\t" or char == "\n" or char == "\r":
     return False
   cat = unicodedata.category(char)
-  if cat in ("Cc", "Cf"):
+  if cat.startswith("C"):
     return True
   return False
 
