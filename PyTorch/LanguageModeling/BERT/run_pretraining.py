@@ -478,8 +478,8 @@ def main():
 
             for f_id in range(f_start_id + 1 , len(files)):
                 
-                # torch.cuda.synchronize()
-                # f_start = time.time()    
+                torch.cuda.synchronize()
+                f_start = time.time()
                 if torch.distributed.get_world_size() > num_files:
                     data_file = files[(f_id*torch.distributed.get_world_size()+torch.distributed.get_rank() + remainder*f_id)%num_files]
                 else:
@@ -498,22 +498,24 @@ def main():
                 # )
                 # thread.start()
                 dataset_future = pool.submit(create_pretraining_dataset, data_file, args.max_predictions_per_seq, shared_file_list, args)
-                # torch.cuda.synchronize()
-                # f_end = time.time()
-                # print('[{}] : shard overhead {}'.format(torch.distributed.get_rank(), f_end - f_start))
+                torch.cuda.synchronize()
+                f_end = time.time()
+                print('[{}] : shard overhead {}'.format(torch.distributed.get_rank(), f_end - f_start))
 
                 train_iter = tqdm(train_dataloader, desc="Iteration") if is_main_process() else train_dataloader
                 for step, batch in enumerate(train_iter):
-                    # torch.cuda.synchronize()
-                    # iter_start = time.time()
+                    torch.cuda.synchronize()
+                    iter_start = time.time()
 
                     training_steps += 1
                     batch = [t.to(device) for t in batch]
                     input_ids, segment_ids, input_mask, masked_lm_labels, next_sentence_labels = batch
+
                     loss = model(input_ids=input_ids, token_type_ids=segment_ids, attention_mask=input_mask,
                                     masked_lm_labels=masked_lm_labels, next_sentence_label=next_sentence_labels,
                                     checkpoint_activations=args.checkpoint_activations)
                     if args.n_gpu > 1:
+
                         loss = loss.mean()  # mean() to average on multi-gpu.
 
                     divisor = args.gradient_accumulation_steps
@@ -579,11 +581,11 @@ def main():
                             return args
 
 
-                    # torch.cuda.synchronize()
-                    # iter_end = time.time()
+                    torch.cuda.synchronize()
+                    iter_end = time.time()
 
-                    # if torch.distributed.get_rank() == 0:
-                    #     print('step {} : {}'.format(global_step, iter_end - iter_start))
+                    if torch.distributed.get_rank() == 0:
+                        print('step {} : {}'.format(global_step, iter_end - iter_start))
 
                 del train_dataloader
                 # thread.join()
