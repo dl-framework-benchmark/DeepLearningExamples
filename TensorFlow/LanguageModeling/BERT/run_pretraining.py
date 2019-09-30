@@ -180,9 +180,9 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
   def model_fn(features, labels, mode, params):  # pylint: disable=unused-argument
     """The `model_fn` for TPUEstimator."""
 
-    tf.logging.info("*** Features ***")
-    for name in sorted(features.keys()):
-      tf.logging.info("  name = %s, shape = %s" % (name, features[name].shape))
+#     tf.logging.info("*** Features ***")
+#     for name in sorted(features.keys()):
+#       tf.logging.info("  name = %s, shape = %s" % (name, features[name].shape))
 
     input_ids = features["input_ids"]
     input_mask = features["input_mask"]
@@ -242,13 +242,13 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
       else:
         tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
 
-    tf.logging.info("**** Trainable Variables ****")
-    for var in tvars:
-      init_string = ""
-      if var.name in initialized_variable_names:
-        init_string = ", *INIT_FROM_CKPT*"
-      tf.logging.info("  %d :: name = %s, shape = %s%s", 0 if hvd is None else hvd.rank(), var.name, var.shape,
-                      init_string)
+#     tf.logging.info("**** Trainable Variables ****")
+#     for var in tvars:
+#       init_string = ""
+#       if var.name in initialized_variable_names:
+#         init_string = ", *INIT_FROM_CKPT*"
+#       tf.logging.info("  %d :: name = %s, shape = %s%s", 0 if hvd is None else hvd.rank(), var.name, var.shape,
+#                       init_string)
 
     output_spec = None
     if mode == tf.estimator.ModeKeys.TRAIN:
@@ -511,9 +511,9 @@ def main(_):
   for input_pattern in FLAGS.input_file.split(","):
     input_files.extend(tf.gfile.Glob(input_pattern))
 
-  tf.logging.info("*** Input Files ***")
-  for input_file in input_files:
-    tf.logging.info("  %s" % input_file)
+#   tf.logging.info("*** Input Files ***")
+#   for input_file in input_files:
+#     tf.logging.info("  %s" % input_file)
 
   tpu_cluster_resolver = None
   if FLAGS.use_tpu and FLAGS.tpu_name:
@@ -541,7 +541,7 @@ def main(_):
       # When --report_loss is True, we set to very large value to prevent
       # default info reporting from estimator.
       # Ideally we should set it to None, but that does not work.
-      log_step_count_steps=10000 if FLAGS.report_loss else 100)
+      log_step_count_steps=10000 if FLAGS.report_loss else 1)
 
   model_fn = model_fn_builder(
       bert_config=bert_config,
