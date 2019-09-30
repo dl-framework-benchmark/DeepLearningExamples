@@ -3,7 +3,7 @@ CURRENT_USER=""
 # CURRENT_USER="-u $(id -u):$(id -g)"
 set +x
 # launch_mode=${1:-"local"}
-CMD="bert:latest bash"
+CMD="tf-bert:latest bash"
 CMD="--privileged --network=host $CMD"
 PORT=""
 # PORT=" -p 8118:8118"
